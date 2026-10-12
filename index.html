@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Avant que ça se referme</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden;
+               font-family: Georgia, "Times New Roman", serif; color: #f3e6cf; }
+  canvas { display: block; width: 100%; height: 100%; }
+
+  .layer { position: fixed; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* Vignette: gets darker/tighter as the urgency grows (the game changes its opacity) */
+  #vignette { z-index: 1; opacity: .25;
+              background: radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,.88) 100%); }
+  #flash    { z-index: 2; background: #fff; opacity: 0; }
+
+  #caption  { position: fixed; left: 50%; bottom: 9%; transform: translateX(-50%); z-index: 3;
+              max-width: 70%; text-align: center; font-style: italic;
+              font-size: clamp(16px, 2.2vw, 26px); line-height: 1.35;
+              text-shadow: 0 0 8px #000, 0 0 3px #000; opacity: 0; transition: opacity 1.2s;
+              pointer-events: none; }
+  #hint     { position: fixed; left: 50%; bottom: 4%; transform: translateX(-50%); z-index: 3;
+              font: 14px/1 Helvetica, Arial, sans-serif; letter-spacing: .08em;
+              background: rgba(0,0,0,.45); padding: 7px 14px; border-radius: 4px;
+              opacity: 0; transition: opacity .6s; pointer-events: none; }
+
+  /* Black overlay used for transitions (starts fully black) */
+  #fade     { z-index: 4; background: #000; opacity: 1; }
+
+  #menu, #endcard { position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 5;
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    text-align: center; padding: 24px; box-sizing: border-box; }
+#menu { background: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.8)), url('cover.jpg') center/cover; }
+  #endcard { background: rgba(0,0,0,.55); display: none; opacity: 0; }
+  h1 { font-weight: normal; font-size: clamp(30px, 5vw, 60px); margin: 0 0 6px; letter-spacing: .02em; color: #ffd9a0; }
+  .sub { font-style: italic; opacity: .8; margin: 0 0 28px; font-size: clamp(15px, 2vw, 20px); }
+  .keys { font: 14px/1.7 Helvetica, Arial, sans-serif; opacity: .85; margin-bottom: 26px; max-width: 560px; }
+  button { font: 16px Georgia, serif; letter-spacing: .06em; color: #1a1008; background: #ffd9a0;
+           border: 0; border-radius: 3px; padding: 12px 28px; cursor: pointer; }
+  button:hover { background: #fff0d4; }
+  .small { font: 12px Helvetica, Arial, sans-serif; opacity: .55; margin-top: 22px; }
+  #endcard p { margin: 6px 0; font-size: clamp(16px, 2.2vw, 24px); }
+  #endcard .credit { font-size: 14px; opacity: .7; font-family: Helvetica, Arial, sans-serif; margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+<div id="vignette" class="layer"></div>
+<div id="flash" class="layer"></div>
+<div id="caption"></div>
+<div id="hint"></div>
+<div id="fade" class="layer"></div>
+
+<div id="menu">
+  <h1>Le Piano</h1>
+  <p class="sub">Un souvenir de rêve</p>
+  <div class="keys">
+    <b>Z Q S D</b> ou <b>flèches</b> : avancer / tourner &nbsp;·&nbsp; <b>souris</b> : regarder (cliquer pour capturer)<br>
+    <b>E</b> : appeler &nbsp;·&nbsp; <b>F</b> : plein écran &nbsp;·&nbsp; <b>M</b> : couper le son
+  </div>
+  <button id="start">Entrer dans le rêve</button>
+  <div class="small">Casque ou haut-parleurs recommandés.</div>
+</div>
+
+<div id="endcard">
+  <p>Puis tout s&rsquo;arrête.</p>
+  <p>La porte est refermée.</p>
+  <p class="credit">Le Piano<br>
+     <span id="author"></span></p>
+  <p style="margin-top:26px"><button id="again">Rêver à nouveau</button></p>
+</div>
+
+<!-- three.js r149 (classic build, no modules => also works by double-clicking index.html).
+     1) try the local copy in lib/three.min.js   2) otherwise load it from the CDN -->
+<script src="lib/three.min.js"></script>
+<script>
+  if (!window.THREE) {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"><\/script>');
+  }
+</script>
+<script src="game.js"></script>
+</body>
+</html>
